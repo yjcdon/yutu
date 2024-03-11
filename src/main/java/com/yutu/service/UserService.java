@@ -10,4 +10,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserService extends IService<User> {
 
+    User queryOne ();
+
+    boolean signup (String username, String password);
+
+    boolean login (String username, String password);
 }

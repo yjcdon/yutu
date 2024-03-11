@@ -3,6 +3,8 @@ package com.yutu.service;
 import com.yutu.entity.Video;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
 * @author lyj
 * @description 针对表【video】的数据库操作Service
@@ -10,4 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface VideoService extends IService<Video> {
 
+    List<Video> queryList ();
 }

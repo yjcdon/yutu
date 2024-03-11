@@ -31,6 +31,13 @@ public class AliOssUtil {
         // 创建OSSClient实例。
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
+        // // 存在原文件
+        // boolean exist = isExist(objectName);
+        // if (exist) {
+        //     ossClient.deleteObject(bucketName, objectName);
+        // }
+
+        // 不存在或删除后，上传新文件
         try {
             // 创建PutObject请求。
             ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(bytes));
@@ -63,4 +70,10 @@ public class AliOssUtil {
 
         return stringBuilder.toString();
     }
+
+    // public boolean isExist (String objectName) {
+    //     // 创建OSSClient实例。
+    //     OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+    //     return ossClient.doesObjectExist(bucketName, objectName);
+    // }
 }

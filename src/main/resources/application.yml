@@ -19,9 +19,8 @@ mybatis-plus:
   type-aliases-package: com.yutu.entity # 别名扫描包
   global-config:
     banner: false
-logging:
-  level:
-    com.hmdp: debug
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # 阿里云OSS的密钥
 yutu:

@@ -19,4 +19,11 @@
         title,text,like_count,
         create_time
     </sql>
+    <select id="queryList" resultType="com.yutu.entity.Video">
+        select id, video_url, cover_url, title, like_count, create_time,user_id
+        from video
+        <where>
+            user_id=#{id}
+        </where>
+    </select>
 </mapper>

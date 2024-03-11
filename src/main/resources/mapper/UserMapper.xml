@@ -5,15 +5,22 @@
 <mapper namespace="com.yutu.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="com.yutu.entity.User">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="userName" column="user_name" jdbcType="VARCHAR"/>
-            <result property="password" column="password" jdbcType="VARCHAR"/>
-            <result property="avatarUrl" column="avatar_url" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="userName" column="user_name" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="avatarUrl" column="avatar_url" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,user_name,password,
-        avatar_url,create_time
+        id,user_name,avatar_url
     </sql>
+    <select id="queryOne" resultType="com.yutu.entity.User">
+
+        select u.id, user_name, avatar_url,
+        from user u
+        <where>
+            u.id=#{id}
+        </where>
+    </select>
 </mapper>
