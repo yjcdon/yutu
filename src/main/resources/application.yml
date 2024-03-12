@@ -11,6 +11,12 @@ spring:
     port: 6379
     password: 1234
     database: 2
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10s
   banner:
     location: banner.txt
     charset: UTF-8
@@ -19,8 +25,9 @@ mybatis-plus:
   type-aliases-package: com.yutu.entity # 别名扫描包
   global-config:
     banner: false
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    com.yutu: debug
 
 # 阿里云OSS的密钥
 yutu:

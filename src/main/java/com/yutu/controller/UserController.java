@@ -5,6 +5,7 @@ import com.yutu.entity.Video;
 import com.yutu.result.Result;
 import com.yutu.service.UserService;
 import com.yutu.service.VideoService;
+import com.yutu.utils.UserHolderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,12 +31,10 @@ public class UserController {
      * @Description: 用户注册
      */
     @PostMapping("/signup")
-    public Result<String> signup (String username, String password) {
-        boolean success = userService.signup(username, password);
-        if (success) {
-            return Result.success("注册成功！");
-        }
-        return Result.error("注册失败！");
+    public Result<String> signup (String userName, String password) {
+        boolean success = userService.signup(userName, password);
+        return Result.success(success ? "注册成功！" : "注册失败！");
+
     }
 
     /**
@@ -46,12 +45,22 @@ public class UserController {
      * @Description: 用户登录接口
      */
     @PostMapping("/login")
-    public Result<String> login (String username, String password) {
-        boolean success = userService.login(username, password);
-                if (success) {
-            return Result.success("登录成功！");
-        }
-        return Result.error("登录失败！");
+    public Result<String> login (String userName, String password) {
+        boolean success = userService.login(userName, password);
+        return Result.success(success ? "登录成功！" : "登录失败！");
+    }
+
+    /**
+     * @Author: 梁雨佳
+     * @Date: 2024/3/12 10:37:23
+     * @Params:
+     * @Return:
+     * @Description: 用户退出登录
+     */
+    @PostMapping("/logout")
+    public Result<String> logout () {
+        UserHolderUtil.removeUser();
+        return Result.success("退出登录！");
     }
 
 
@@ -75,7 +84,7 @@ public class UserController {
      * @Description: 用户点击某个按钮，进入页面查看自己发布的所有视频
      */
     @GetMapping("/me/videos")
-    public Result<List<Video>> meVideos () {
+    public Result<List<Video>> myVideos () {
         return Result.success(videoService.queryList());
     }
 

@@ -2,6 +2,7 @@ package com.yutu.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.yutu.entity.User;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * @author lyj
@@ -12,8 +13,6 @@ import com.yutu.entity.User;
 public interface UserMapper extends BaseMapper<User> {
 
     User queryOne (Long id);
+
+    User queryOneByUnamePsw (@Param("userName") String userName, @Param("password") String password);
 }
-
-
-
-

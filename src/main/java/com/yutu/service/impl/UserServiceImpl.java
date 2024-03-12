@@ -1,15 +1,18 @@
 package com.yutu.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yutu.entity.User;
 import com.yutu.mapper.UserMapper;
 import com.yutu.service.UserService;
 import com.yutu.utils.UserHolderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
+
+import static com.yutu.constants.RedisConstants.LOGIN_USER_KEY;
 
 /**
  * @author lyj
@@ -22,6 +25,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private StringRedisTemplate srt;
 
     @Override
     public User queryOne () {
@@ -36,7 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             user.setUserName(username);
             user.setPassword(password);
             // 设置默认头像
-            user.setAvatarUrl("https://d-ssl.dtstatic.com/uploads/blog/202207/28/20220728161450_2a0c9.thumb.300_0.jpg_webp");
+            user.setAvatarUrl("https://img95.699pic.com/photo/40250/0502.jpg_wh300.jpg");
             user.setCreateTime(LocalDateTime.now());
 
             int success = userMapper.insert(user);
@@ -46,11 +52,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public boolean login (String username, String password) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getUserName, username).eq(User::getPassword, password);
-        User user = userMapper.selectOne(queryWrapper);
-        return user != null;
+    public boolean login (String userName, String password) {
+        User user = userMapper.queryOneByUnamePsw(userName, password);
+        if (user != null) {
+            UserHolderUtil.saveUser(user);
+
+            // 把用户信息保存到Redis中
+            String key = LOGIN_USER_KEY + user.getId();
+            srt.opsForValue().set(key, "1");
+            srt.expire(key, 10, TimeUnit.DAYS);
+
+            return true;
+        }
+        return false;
     }
 }
 

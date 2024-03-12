@@ -13,4 +13,8 @@ import java.util.List;
 public interface VideoService extends IService<Video> {
 
     List<Video> queryList ();
+
+    Video queryOne (Long id);
+
+    void like (Long id);
 }

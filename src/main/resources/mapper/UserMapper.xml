@@ -23,4 +23,11 @@
             u.id=#{id}
         </where>
     </select>
+    <select id="queryOneByUnamePsw" resultType="com.yutu.entity.User">
+        select id, user_name, avatar_url
+        from user
+        <where>
+            user_name = #{userName} and password = #{password}
+        </where>
+    </select>
 </mapper>
