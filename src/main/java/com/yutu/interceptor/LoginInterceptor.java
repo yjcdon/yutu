@@ -1,4 +1,3 @@
-/*
 package com.yutu.interceptor;
 
 import cn.hutool.core.util.StrUtil;
@@ -27,14 +26,16 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle (HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        String token = request.getHeader("token");
+        String token = request.getHeader("token"); // 请求头中的是：token  login:user:11
         if (StrUtil.isBlank(token)) {
+            log.error("未登录1");
             response.setStatus(401);
             return false;
         }
 
         String userJSONStr = srt.opsForValue().get(token);
         if (StrUtil.isBlank(userJSONStr)) {
+            log.error("未登录2");
             response.setStatus(401);
             return false;
         }
@@ -43,11 +44,9 @@ public class LoginInterceptor implements HandlerInterceptor {
         User user = JSONUtil.toBean(userJSONStr, User.class);
         UserHolderUtil.saveUser(user);
 
-        log.error("什么情况");
         // 发过来请求了，将Redis的key过期时间刷新
         srt.expire(LOGIN_USER_KEY + UserHolderUtil.getUser().getId(), 10, TimeUnit.DAYS);
         // 放行
         return true;
     }
 }
-*/

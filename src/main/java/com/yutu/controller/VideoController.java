@@ -51,4 +51,31 @@ public class VideoController {
     public Result<List<Video>> list () {
         return Result.success(videoService.list());
     }
+
+    /**
+     * @Author: 梁雨佳
+     * @Date: 2024/3/12 22:12:31
+     * @Params:
+     * @Return:
+     * @Description: 用户上传视频封面
+     */
+
+    @PutMapping("/{id}/cover")
+    public Result<String> updateCover (@PathVariable Long id) {
+        boolean b = videoService.updateCover(id);
+        return b?Result.success("上传成功！"):Result.error("上传失败！");
+    }
+
+    /**
+     * @Author: 梁雨佳
+     * @Date: 2024/3/12 22:12:19
+     * @Params:
+     * @Return:
+     * @Description: 用户上传视频
+     */
+    @PutMapping("/{id}/video")
+    public Result<String> updateVideo (@PathVariable Long id) {
+        boolean b = videoService.updateVideo(id);
+        return b?Result.success("上传成功！"):Result.error("上传失败！");
+    }
 }

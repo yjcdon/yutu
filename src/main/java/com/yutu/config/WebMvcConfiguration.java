@@ -1,4 +1,3 @@
-/*
 package com.yutu.config;
 
 import com.yutu.interceptor.LoginInterceptor;
@@ -25,4 +24,3 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 );
     }
 }
-*/

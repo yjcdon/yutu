@@ -17,10 +17,10 @@
     </sql>
     <select id="queryOne" resultType="com.yutu.entity.User">
 
-        select u.id, user_name, avatar_url,
-        from user u
+        select id, user_name, avatar_url
+        from user
         <where>
-            u.id=#{id}
+            id=#{id}
         </where>
     </select>
     <select id="queryOneByUnamePsw" resultType="com.yutu.entity.User">

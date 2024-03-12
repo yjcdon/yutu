@@ -62,6 +62,40 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         }
     }
 
+    @Override
+    public boolean updateCover (Long id) {
+        String key = RedisConstants.UPLOAD_VIDEO_COVER_KEY + UserHolderUtil.getUser().getId();
+        String filePath = srt.opsForValue().get(key);
+        if (filePath.isEmpty()) {
+            return false;
+        }
+
+        //     修改数据库
+        Video video = videoMapper.selectById(id);
+        video.setCoverUrl(filePath);
+        videoMapper.updateById(video);
+
+        srt.delete(key);
+        return true;
+    }
+
+    @Override
+    public boolean updateVideo (Long id) {
+        String key = RedisConstants.UPLOAD_VIDEO_KEY + UserHolderUtil.getUser().getId();
+        String filePath = srt.opsForValue().get(key);
+        if (filePath.isEmpty()) {
+            return false;
+        }
+
+        //     修改数据库
+        Video video = videoMapper.selectById(id);
+        video.setVideoUrl(filePath);
+        videoMapper.updateById(video);
+
+        srt.delete(key);
+        return true;
+    }
+
     /**
      * @Author: 梁雨佳
      * @Date: 2024/3/12 11:16:19

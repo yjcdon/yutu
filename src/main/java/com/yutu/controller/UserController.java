@@ -7,10 +7,7 @@ import com.yutu.service.UserService;
 import com.yutu.service.VideoService;
 import com.yutu.utils.UserHolderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,8 +43,9 @@ public class UserController {
      */
     @PostMapping("/login")
     public Result<String> login (String userName, String password) {
-        boolean success = userService.login(userName, password);
-        return Result.success(success ? "登录成功！" : "登录失败！");
+        // 返回的这个玩意，前端保存到请求头中："login:user:11"
+        String tokenKey = userService.login(userName, password);
+        return Result.success(tokenKey);
     }
 
     /**
@@ -86,6 +84,19 @@ public class UserController {
     @GetMapping("/me/videos")
     public Result<List<Video>> myVideos () {
         return Result.success(videoService.queryList());
+    }
+
+    /**
+     * @Author: 梁雨佳
+     * @Date: 2024/3/12 22:12:48
+     * @Params:
+     * @Return:
+     * @Description: 用户上传头像
+     */
+    @PutMapping("/me")
+    public Result<String> updateAvatar () {
+        boolean b = userService.updateAvatar();
+        return b ? Result.success("更新成功！") : Result.error("更新失败！");
     }
 
 }

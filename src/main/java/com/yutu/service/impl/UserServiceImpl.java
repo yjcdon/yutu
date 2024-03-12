@@ -1,8 +1,9 @@
 package com.yutu.service.impl;
 
-import cn.hutool.core.lang.UUID;
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.yutu.constants.RedisConstants;
 import com.yutu.entity.User;
 import com.yutu.mapper.UserMapper;
 import com.yutu.service.UserService;
@@ -54,19 +55,40 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public boolean login (String userName, String password) {
+    public String login (String userName, String password) {
         User user = userMapper.queryOneByUnamePsw(userName, password);
         if (user != null) {
             UserHolderUtil.saveUser(user);
 
-            // 把用户信息保存到Redis中
-            String tokenKey = LOGIN_USER_KEY + UUID.randomUUID().toString(true);
+            // 把用户信息保存到Redis中,返回token，让前端保存到请求头中
+            String tokenKey = LOGIN_USER_KEY + user.getId();
             srt.opsForValue().set(tokenKey, JSONUtil.toJsonStr(user));
             srt.expire(tokenKey, 10, TimeUnit.DAYS);
 
-            return true;
+            return tokenKey;
         }
-        return false;
+        return "";
+    }
+
+    @Override
+    public boolean updateAvatar () {
+        // 从Redis中取出filepath
+        User user = UserHolderUtil.getUser();
+        Long userId = user.getId();
+        String key = RedisConstants.UPLOAD_AVATAR_KEY + userId;
+        String filePath = srt.opsForValue().get(key);
+        if (filePath.isEmpty()) {
+            return false;
+        }
+
+        // 更新数据库
+        user.setAvatarUrl(filePath);
+        userMapper.updateById(user);
+
+        // 删除Redis中的缓存
+        srt.delete(key);
+
+        return true;
     }
 }
 
