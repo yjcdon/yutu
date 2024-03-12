@@ -74,10 +74,6 @@
             <version>3.15.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -110,7 +106,6 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.yutu.YutuApplication</mainClass>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>

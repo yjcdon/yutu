@@ -1,7 +1,6 @@
 package com.yutu.controller;
 
 import cn.hutool.core.lang.UUID;
-import com.aliyun.oss.OSSClient;
 import com.yutu.result.Result;
 import com.yutu.utils.AliOssUtil;
 import lombok.extern.slf4j.Slf4j;

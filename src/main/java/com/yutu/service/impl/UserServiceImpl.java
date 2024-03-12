@@ -1,5 +1,7 @@
 package com.yutu.service.impl;
 
+import cn.hutool.core.lang.UUID;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yutu.entity.User;
 import com.yutu.mapper.UserMapper;
@@ -58,9 +60,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             UserHolderUtil.saveUser(user);
 
             // 把用户信息保存到Redis中
-            String key = LOGIN_USER_KEY + user.getId();
-            srt.opsForValue().set(key, "1");
-            srt.expire(key, 10, TimeUnit.DAYS);
+            String tokenKey = LOGIN_USER_KEY + UUID.randomUUID().toString(true);
+            srt.opsForValue().set(tokenKey, JSONUtil.toJsonStr(user));
+            srt.expire(tokenKey, 10, TimeUnit.DAYS);
 
             return true;
         }
