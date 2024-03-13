@@ -19,6 +19,14 @@
         title,text,like_count,
         create_time
     </sql>
+
+    <delete id="deleteByIdAndUserId">
+        delete
+        from video
+        where id = #{id}
+          and user_id = #{userId}
+    </delete>
+
     <select id="queryList" resultType="com.yutu.entity.Video">
         select id, video_url, cover_url, title, like_count, create_time,user_id
         from video

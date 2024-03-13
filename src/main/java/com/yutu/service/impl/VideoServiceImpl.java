@@ -1,10 +1,12 @@
 package com.yutu.service.impl;
 
+import cn.hutool.core.io.file.FileNameUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yutu.constants.RedisConstants;
 import com.yutu.entity.Video;
 import com.yutu.mapper.VideoMapper;
 import com.yutu.service.VideoService;
+import com.yutu.utils.AliOssUtil;
 import com.yutu.utils.UserHolderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -26,6 +28,9 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
 
     @Autowired
     private StringRedisTemplate srt;
+
+    @Autowired
+    private AliOssUtil aliOssUtil;
 
     @Override
     public List<Video> queryList () {
@@ -62,38 +67,64 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         }
     }
 
+
     @Override
-    public boolean updateCover (Long id) {
-        String key = RedisConstants.UPLOAD_VIDEO_COVER_KEY + UserHolderUtil.getUser().getId();
-        String filePath = srt.opsForValue().get(key);
-        if (filePath.isEmpty()) {
+    public boolean updateVideo (Video video) {
+        String videokey = RedisConstants.UPLOAD_VIDEO_KEY + UserHolderUtil.getUser().getId();
+        String coverkey = RedisConstants.UPLOAD_VIDEO_COVER_KEY + UserHolderUtil.getUser().getId();
+        String videoFilePath = srt.opsForValue().get(videokey);
+        String coverFilePath = srt.opsForValue().get(coverkey);
+        if (videoFilePath.isEmpty() || coverFilePath.isEmpty()) {
             return false;
         }
 
         //     修改数据库
-        Video video = videoMapper.selectById(id);
-        video.setCoverUrl(filePath);
         videoMapper.updateById(video);
 
-        srt.delete(key);
+        srt.delete(videokey);
+        srt.delete(coverkey);
         return true;
     }
 
     @Override
-    public boolean updateVideo (Long id) {
-        String key = RedisConstants.UPLOAD_VIDEO_KEY + UserHolderUtil.getUser().getId();
-        String filePath = srt.opsForValue().get(key);
-        if (filePath.isEmpty()) {
-            return false;
-        }
-
-        //     修改数据库
+    public boolean removeVideo (Long id) {
         Video video = videoMapper.selectById(id);
-        video.setVideoUrl(filePath);
-        videoMapper.updateById(video);
+        int isSuccess = videoMapper.deleteByIdAndUserId(id, UserHolderUtil.getUser().getId());
+        // 删除视频成功，那就把oss中的封面图和视频都删了
+        if (isSuccess > 0) {
+            aliOssUtil.delete(FileNameUtil.getName(video.getVideoUrl()));
+            aliOssUtil.delete(FileNameUtil.getName(video.getCoverUrl()));
+            return true;
+        }
+        return false;
 
-        srt.delete(key);
-        return true;
+    }
+
+    @Override
+    public boolean saveVideo (Video video) {
+        video.setUserId(UserHolderUtil.getUser().getId());
+        System.out.println(video);
+
+        // String videokey = RedisConstants.UPLOAD_VIDEO_KEY + UserHolderUtil.getUser().getId();
+        // String coverkey = RedisConstants.UPLOAD_VIDEO_COVER_KEY + UserHolderUtil.getUser().getId();
+        // String videoFilePath = srt.opsForValue().get(videokey);
+        // String coverFilePath = srt.opsForValue().get(coverkey);
+        // if (videoFilePath.isEmpty() || coverFilePath.isEmpty()) {
+        //     return false;
+        // }
+        //
+        // video.setVideoUrl(videoFilePath);
+        // video.setCoverUrl(coverFilePath);
+        // int success = videoMapper.insert(video);
+        // if (success > 0) {
+        //     srt.delete(videokey);
+        //     srt.delete(coverkey);
+        //     return true;
+        // }
+        // return false;
+
+        return videoMapper.insert(video) > 0;
+
     }
 
     /**

@@ -16,5 +16,9 @@ public interface UserService extends IService<User> {
 
     String login (String username, String password);
 
-    boolean updateAvatar ();
+    // boolean updateAvatar ();
+
+    void logout ();
+
+    boolean updateUser (User user);
 }

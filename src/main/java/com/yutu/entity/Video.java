@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import lombok.Data;
@@ -52,7 +53,7 @@ public class Video implements Serializable {
     /**
      * 上传视频时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /*
     是否点赞

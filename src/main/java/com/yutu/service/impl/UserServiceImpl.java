@@ -1,18 +1,18 @@
 package com.yutu.service.impl;
 
+import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yutu.constants.RedisConstants;
 import com.yutu.entity.User;
 import com.yutu.mapper.UserMapper;
 import com.yutu.service.UserService;
+import com.yutu.utils.AliOssUtil;
 import com.yutu.utils.UserHolderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 import static com.yutu.constants.RedisConstants.LOGIN_USER_KEY;
@@ -32,6 +32,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Autowired
     private StringRedisTemplate srt;
 
+    @Autowired
+    private AliOssUtil aliOssUtil;
+
     @Override
     public User queryOne () {
         Long userId = UserHolderUtil.getUser().getId();
@@ -46,7 +49,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             user.setPassword(password);
             // 设置默认头像
             user.setAvatarUrl("https://img95.699pic.com/photo/40250/0502.jpg_wh300.jpg");
-            user.setCreateTime(LocalDateTime.now());
 
             int success = userMapper.insert(user);
             return success > 0;
@@ -70,7 +72,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return "";
     }
 
-    @Override
+/*    @Override
     public boolean updateAvatar () {
         // 从Redis中取出filepath
         User user = UserHolderUtil.getUser();
@@ -80,6 +82,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (filePath.isEmpty()) {
             return false;
         }
+
+        // 更新数据库
+        user.setAvatarUrl(filePath);
+        userMapper.updateById(user);
+
+        // 删除Redis中的缓存
+        srt.delete(key);
+
+        return true;
+    }*/
+
+    @Override
+    public void logout () {
+        String key = LOGIN_USER_KEY + UserHolderUtil.getUser().getId();
+        srt.delete(key);
+        UserHolderUtil.removeUser();
+    }
+
+    @Override
+    public boolean updateUser (User user) {
+        // 从Redis中取出filepath
+        Long userId = user.getId();
+        String key = RedisConstants.UPLOAD_AVATAR_KEY + userId;
+        String filePath = srt.opsForValue().get(key);
+        if (filePath.isEmpty()) {
+            return false;
+        }
+
+        // 删除oss中旧的头像图片
+        aliOssUtil.delete(FileNameUtil.getName(user.getAvatarUrl()));
 
         // 更新数据库
         user.setAvatarUrl(filePath);

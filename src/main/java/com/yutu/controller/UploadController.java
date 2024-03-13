@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/upload")
@@ -43,6 +44,7 @@ public class UploadController {
 
             String key = RedisConstants.UPLOAD_AVATAR_KEY + UserHolderUtil.getUser().getId();
             srt.opsForValue().set(key, filePath);
+            srt.expire(key,3, TimeUnit.DAYS);
 
             return Result.success(filePath);
         } catch (IOException e) {
@@ -61,6 +63,7 @@ public class UploadController {
 
             String key = RedisConstants.UPLOAD_VIDEO_COVER_KEY + UserHolderUtil.getUser().getId();
             srt.opsForValue().set(key, filePath);
+            srt.expire(key,3, TimeUnit.DAYS);
 
             return Result.success(filePath);
         } catch (IOException e) {
@@ -79,6 +82,7 @@ public class UploadController {
 
             String key = RedisConstants.UPLOAD_VIDEO_KEY + UserHolderUtil.getUser().getId();
             srt.opsForValue().set(key, filePath);
+            srt.expire(key,3, TimeUnit.DAYS);
 
             return Result.success(filePath);
         } catch (IOException e) {

@@ -15,6 +15,20 @@ public class VideoController {
     @Autowired
     private VideoService videoService;
 
+
+    /**
+     * @Author: 梁雨佳
+     * @Date: 2024/3/13 13:26:04
+     * @Params:
+     * @Return:
+     * @Description: 用户新增视频
+     */
+    @PostMapping
+    public Result<String> save (@RequestBody Video video) {
+        boolean b = videoService.saveVideo(video);
+        return b ? Result.success("新增成功！") : Result.error("新增失败！");
+    }
+
     /**
      * @Author: 梁雨佳
      * @Date: 2024/3/12 10:40:26
@@ -54,28 +68,27 @@ public class VideoController {
 
     /**
      * @Author: 梁雨佳
-     * @Date: 2024/3/12 22:12:31
+     * @Date: 2024/3/12 22:12:19
      * @Params:
      * @Return:
-     * @Description: 用户上传视频封面
+     * @Description: 用户更新视频信息
      */
-
-    @PutMapping("/{id}/cover")
-    public Result<String> updateCover (@PathVariable Long id) {
-        boolean b = videoService.updateCover(id);
-        return b?Result.success("上传成功！"):Result.error("上传失败！");
+    @PutMapping
+    public Result<String> updateVideo (@RequestBody Video video) {
+        boolean b = videoService.updateVideo(video);
+        return b ? Result.success("更新成功！") : Result.error("更新失败！");
     }
 
     /**
      * @Author: 梁雨佳
-     * @Date: 2024/3/12 22:12:19
-     * @Params:
+     * @Date: 2024/3/12 22:29:41
+     * @Params: 视频id
      * @Return:
-     * @Description: 用户上传视频
+     * @Description: 用户删除自己发布的视频
      */
-    @PutMapping("/{id}/video")
-    public Result<String> updateVideo (@PathVariable Long id) {
-        boolean b = videoService.updateVideo(id);
-        return b?Result.success("上传成功！"):Result.error("上传失败！");
+    @DeleteMapping("/{id}")
+    public Result<String> deleteVideo (@PathVariable Long id) {
+        boolean b = videoService.removeVideo(id);
+        return b ? Result.success("删除成功！") : Result.error("删除失败！");
     }
 }

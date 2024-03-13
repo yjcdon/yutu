@@ -18,7 +18,9 @@ public interface VideoService extends IService<Video> {
 
     void like (Long id);
 
-    boolean updateCover (Long id);
+    boolean updateVideo (Video video);
 
-    boolean updateVideo (Long id);
+    boolean removeVideo (Long id);
+
+    boolean saveVideo (Video video);
 }

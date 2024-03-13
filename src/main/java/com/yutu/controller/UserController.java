@@ -5,7 +5,6 @@ import com.yutu.entity.Video;
 import com.yutu.result.Result;
 import com.yutu.service.UserService;
 import com.yutu.service.VideoService;
-import com.yutu.utils.UserHolderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,13 +36,13 @@ public class UserController {
     /**
      * @Author: 梁雨佳
      * @Date: 2024/3/11 18:27:49
-     * @Params:
+     * @Params: 用户名、密码
      * @Return:
      * @Description: 用户登录接口
      */
     @PostMapping("/login")
     public Result<String> login (String userName, String password) {
-        // 返回的这个玩意，前端保存到请求头中："login:user:11"
+        // 返回的这个玩意，前端保存到请求头中：login:user:11
         String tokenKey = userService.login(userName, password);
         return Result.success(tokenKey);
     }
@@ -57,7 +56,7 @@ public class UserController {
      */
     @PostMapping("/logout")
     public Result<String> logout () {
-        UserHolderUtil.removeUser();
+        userService.logout();
         return Result.success("退出登录！");
     }
 
@@ -88,14 +87,14 @@ public class UserController {
 
     /**
      * @Author: 梁雨佳
-     * @Date: 2024/3/12 22:12:48
-     * @Params:
+     * @Date: 2024/3/13 14:43:55
+     * @Params: 该用户的实体类
      * @Return:
-     * @Description: 用户上传头像
+     * @Description: 更新用户信息
      */
-    @PutMapping("/me")
-    public Result<String> updateAvatar () {
-        boolean b = userService.updateAvatar();
+    @PostMapping("/me")
+    public Result<String> updateUser (@RequestBody User user) {
+        boolean b = userService.updateUser(user);
         return b ? Result.success("更新成功！") : Result.error("更新失败！");
     }
 

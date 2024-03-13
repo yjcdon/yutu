@@ -14,6 +14,8 @@ import java.util.List;
 public interface VideoMapper extends BaseMapper<Video> {
 
     List<Video> queryList (Long userId);
+
+    int deleteByIdAndUserId (Long id, Long userId);
 }
 
 
