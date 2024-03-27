@@ -20,7 +20,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/user/login",
                         "/user/signup",
-                        "/video/**" // 这个是看视频的路径，后面跟着的是随机的视频id
+                        "/video/all"
                 );
     }
 }

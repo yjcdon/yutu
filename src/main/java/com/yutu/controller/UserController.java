@@ -27,10 +27,9 @@ public class UserController {
      * @Description: 用户注册
      */
     @PostMapping("/signup")
-    public Result<String> signup (String userName, String password) {
-        boolean success = userService.signup(userName, password);
+    public Result<String> signup (@RequestBody User user) {
+        boolean success = userService.signup(user);
         return Result.success(success ? "注册成功！" : "注册失败！");
-
     }
 
     /**

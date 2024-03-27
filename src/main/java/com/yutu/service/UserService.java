@@ -12,7 +12,7 @@ public interface UserService extends IService<User> {
 
     User queryOne ();
 
-    boolean signup (String username, String password);
+    boolean signup (User user);
 
     String login (String username, String password);
 

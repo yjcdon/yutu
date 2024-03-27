@@ -1,21 +1,24 @@
 package com.yutu;
 
-import cn.hutool.core.io.file.FileNameUtil;
 import com.yutu.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import java.util.ArrayList;
+
+// @SpringBootTest
 class YutuApplicationTests {
 
-    @Autowired
-    private UserService userService;
 
     @Test
     public void test () {
-        System.out.println(FileNameUtil.getName("http://yutu-408.oss-cn-guangzhou.aliyuncs.com/avatar/aa55528879424f6d83267746dcf303fd.png"));
+        ArrayList<String> list = new ArrayList<>();
 
+        list.add("12");
+        list.add("12");
+        list.add("12");
+        list.add("12");
     }
 
 }

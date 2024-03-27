@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
 import static com.yutu.constants.RedisConstants.LOGIN_USER_KEY;
@@ -42,14 +43,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public boolean signup (String username, String password) {
-        if (username.length() <= 20 && password.length() <= 20) {
-            User user = new User();
-            user.setUserName(username);
-            user.setPassword(password);
+    public boolean signup (User user) {
+        if (user.getUserName().length() <= 20 && user.getPassword().length() <= 20) {
             // 设置默认头像
             user.setAvatarUrl("https://img95.699pic.com/photo/40250/0502.jpg_wh300.jpg");
-
+            user.setCreateTime(LocalDateTime.now());
             int success = userMapper.insert(user);
             return success > 0;
         }

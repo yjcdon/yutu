@@ -61,7 +61,7 @@ public class VideoController {
      * @Return:
      * @Description: 查询所有视频信息
      */
-    @GetMapping
+    @GetMapping("/all")
     public Result<List<Video>> list () {
         return Result.success(videoService.list());
     }
